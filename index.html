@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Screen Simulator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .device {
+            position: relative;
+            margin: auto;
+            overflow: hidden;
+            bottom: 50px;
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s, height 0.3s; /* Smooth transition */
+        }
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            background-color: #f8fafc; /* light background */
+            border: 1px solid #ccc; /* optional border for the screen */
+        }
+        .iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-10 flex flex-col md:flex-row justify-between">
+
+    <main class="flex-grow mb-5 md:mb-0">
+        <h1 class="text-3xl font-bold mb-5">Mobile Screen Simulator</h1>
+        <div id="simulator" class="device">
+            <div class="screen">
+                <iframe id="screen" class="iframe"></iframe>
+            </div>
+        </div>
+    </main>
+
+    <aside class="w-64">
+        <div class="mb-5">
+            <label for="urlInput" class="block text-lg font-semibold mb-2">Enter URL:</label>
+            <input type="text" id="urlInput" class="border border-gray-300 rounded p-2 w-full" placeholder="https://example.com" />
+            <button id="loadButton" class="mt-2 bg-blue-500 text-white rounded p-2 w-full">Load URL</button>
+        </div>
+
+        <div class="mb-5">
+            <label for="deviceSelector" class="block text-lg font-semibold mb-2">Select Device:</label>
+            <select id="deviceSelector" class="border border-gray-300 rounded p-2 w-full">
+                <option value="iphone-13">iPhone 13</option>
+                <option value="galaxy-s21">Galaxy S21</option>
+                <option value="pixel-6">Pixel 6</option>
+                <option value="oneplus-9">OnePlus 9</option>
+                <option value="xiaomi-mi-11">Xiaomi Mi 11</option>
+                <option value="google-pixel-5">Google Pixel 5</option>
+                <option value="samsung-galaxy-note20">Samsung Galaxy Note 20</option>
+                <option value="sony-xperia-1">Sony Xperia 1</option>
+                <option value="huawei-p40">Huawei P40</option>
+                <option value="lg-v60">LG V60</option>
+                <option value="ipad">iPad</option>
+                <option value="galaxy-tab">Galaxy Tab</option>
+            </select>
+        </div>
+
+        <div class="flex space-x-2">
+            <button id="increaseSize" class="bg-green-500 text-white rounded p-2 w-full">Increase Size</button>
+            <button id="decreaseSize" class="bg-red-500 text-white rounded p-2 w-full">Decrease Size</button>
+        </div>
+    </aside>
+
+    <script>
+        const deviceSelector = document.getElementById('deviceSelector');
+        const screen = document.getElementById('screen');
+        const urlInput = document.getElementById('urlInput');
+        const loadButton = document.getElementById('loadButton');
+        const increaseSizeButton = document.getElementById('increaseSize');
+        const decreaseSizeButton = document.getElementById('decreaseSize');
+        
+        const devices = {
+            "iphone-13": { width: '375px', height: '812px' },
+            "galaxy-s21": { width: '412px', height: '915px' },
+            "pixel-6": { width: '412px', height: '854px' },
+            "oneplus-9": { width: '2400px', height: '1080px' },
+            "xiaomi-mi-11": { width: '1440px', height: '3200px' },
+            "google-pixel-5": { width: '412px', height: '873px' },
+            "samsung-galaxy-note20": { width: '412px', height: '916px' },
+            "sony-xperia-1": { width: '1644px', height: '3840px' },
+            "huawei-p40": { width: '415px', height: '876px' },
+            "lg-v60": { width: '1080px', height: '2460px' },
+            "ipad": { width: '768px', height: '1024px' },
+            "galaxy-tab": { width: '800px', height: '1280px' },
+        };
+
+        let currentWidth = '375px';
+        let currentHeight = '812px';
+
+        function updateSimulator(device) {
+            const { width, height } = devices[device];
+            currentWidth = width;
+            currentHeight = height;
+            const simulator = document.querySelector('.device');
+            simulator.style.width = currentWidth;
+            simulator.style.height = currentHeight;
+        }
+
+        increaseSizeButton.addEventListener('click', () => {
+            currentWidth = parseInt(currentWidth) * 1.1 + 'px';
+            currentHeight = parseInt(currentHeight) * 1.1 + 'px';
+            const simulator = document.querySelector('.device');
+            simulator.style.width = currentWidth;
+            simulator.style.height = currentHeight;
+        });
+
+        decreaseSizeButton.addEventListener('click', () => {
+            currentWidth = parseInt(currentWidth) * 0.9 + 'px';
+            currentHeight = parseInt(currentHeight) * 0.9 + 'px';
+            const simulator = document.querySelector('.device');
+            simulator.style.width = currentWidth;
+            simulator.style.height = currentHeight;
+        });
+
+        loadButton.addEventListener('click', () => {
+            const url = urlInput.value;
+            // Add a simple check for URL validity
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                screen.src = url;
+            } else {
+                alert('Please enter a valid URL starting with http:// or https://');
+            }
+        });
+
+        deviceSelector.addEventListener('change', (event) => {
+            updateSimulator(event.target.value);
+        });
+
+        // Initialize with the default selected device
+        updateSimulator(deviceSelector.value);
+    </script>
+
+</body>
+</html>
